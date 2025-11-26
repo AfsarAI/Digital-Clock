@@ -1,5 +1,5 @@
 # Neon Digital Clock
-### Created By My LLM Aplication!
+> Created By My LLM Aplication!
 
 A sleek, one-page responsive digital clock web application featuring a glowing neon effect and a theme switch for 12-hour and 24-hour formats. Built with vanilla JavaScript and styled using Tailwind CSS.
 
