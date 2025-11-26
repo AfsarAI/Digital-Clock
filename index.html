@@ -1,215 +1,536 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Aesthetic Digital Clock</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ultimate Aesthetic Digital Clock</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CDN with version param for cache-busting -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp&v=2025.11.26" defer></script>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
 
-    <style>
-        body {
-            font-family: 'Orbitron', sans-serif;
-            transition: all .5s ease;
-        }
+  <style>
+    :root{
+      --glass-bg: rgba(255,255,255,0.06);
+      --glass-border: rgba(255,255,255,0.08);
+      --transition: 400ms;
+    }
 
-        /* ---------------- DARK MODE (NEON FUTURISTIC) ---------------- */
-        body.dark-mode {
-            background: radial-gradient(circle at center, #0f172a 10%, #000 90%);
-            color: #0ff;
-        }
+    html,body{
+      height:100%;
+      margin:0;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
 
-        .dark-clock {
-            text-shadow: 
-                0 0 6px #0ff,
-                0 0 12px #0ff,
-                0 0 22px #0ff,
-                0 0 50px #00aaff;
-        }
+    body {
+      font-family: 'Orbitron', 'Share Tech Mono', monospace;
+      transition: background var(--transition), color var(--transition);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      overflow:hidden;
+    }
 
-        .dark-btn {
-            border: 1px solid rgba(0,255,255,0.4);
-            background: rgba(0,255,255,0.05);
-            box-shadow: 0 0 20px rgba(0,255,255,0.3);
-            color: #0ff;
-        }
+    /* -------- Dark (Neon) -------- */
+    body.dark-mode{
+      background: radial-gradient(1000px 600px at 10% 10%, rgba(2,6,23,0.75), #030409 40%, #000000 100%);
+      color: #00f9e0;
+    }
+    .dark-mode .glass {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(0,255,230,0.06);
+      box-shadow: 0 8px 40px rgba(0,255,230,0.03), inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+    .dark-mode .clock-text{
+      color: #00f9e0;
+      text-shadow:
+        0 0 6px rgba(0,249,224,0.6),
+        0 0 14px rgba(0,249,224,0.35),
+        0 0 40px rgba(0,170,255,0.12);
+    }
+    .dark-mode .btn--primary {
+      background: rgba(0,255,230,0.06);
+      color: #00f9e0;
+      border: 1px solid rgba(0,255,230,0.14);
+      box-shadow: 0 6px 18px rgba(0,255,230,0.06);
+    }
+    .dark-mode .btn--primary:hover{
+      background: rgba(0,255,230,0.13);
+      box-shadow: 0 10px 30px rgba(0,255,230,0.12);
+      transform: translateY(-3px) scale(1.02);
+    }
 
-        .dark-btn:hover {
-            background: rgba(0,255,255,0.2);
-            box-shadow: 0 0 32px rgba(0,255,255,0.6);
-        }
+    /* -------- Light (Neumorphism + Glass) -------- */
+    body.light-mode{
+      background: linear-gradient(180deg,#e9eef7 0%, #f5f7fb 100%);
+      color:#1f2937;
+    }
+    .light-mode .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(245,247,250,0.7));
+      border: 1px solid rgba(0,0,0,0.03);
+      box-shadow: 16px 16px 30px rgba(183,190,200,0.25), -14px -14px 30px rgba(255,255,255,0.9);
+    }
+    .light-mode .clock-text{
+      color:#0f172a;
+      text-shadow: 0 2px 6px rgba(15,23,42,0.06);
+    }
+    .light-mode .btn--primary{
+      background: #eef3fb;
+      color: #0f172a;
+      border: none;
+      box-shadow: 7px 7px 18px rgba(184,185,190,0.35), -7px -7px 18px rgba(255,255,255,0.9);
+    }
+    .light-mode .btn--primary:hover{
+      transform: translateY(-2px) scale(0.995);
+      box-shadow: inset 6px 6px 12px rgba(184,185,190,0.22), inset -6px -6px 12px rgba(255,255,255,0.7);
+    }
 
-        /* ---------------- LIGHT MODE (NEUMORPHISM + GLASS) ---------------- */
-        body.light-mode {
-            background: #e8ebf2;
-            color: #2e2e2e;
-        }
+    /* Glass center card */
+    .glass {
+      width: min(920px, 92vw);
+      max-width: 920px;
+      padding: clamp(20px, 3.4vw, 36px);
+      border-radius: 20px;
+      display:flex;
+      flex-direction:column;
+      gap: 18px;
+      align-items:center;
+      justify-content:center;
+      transition: all var(--transition) ease;
+      backdrop-filter: blur(12px) saturate(140%);
+    }
 
-        .light-clock {
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
-        }
+    .clock-wrap{ display:flex; flex-direction:column; align-items:center; gap:8px; }
 
-        .light-btn {
-            background: #e8ebf2;
-            color: #333;
-            border: none;
-            box-shadow: 
-                7px 7px 14px #c6c9d0,
-                -7px -7px 14px #ffffff;
-        }
+    .clock-row{
+      display:flex;
+      align-items:flex-end;
+      gap: 10px;
+      justify-content:center;
+    }
 
-        .light-btn:hover {
-            box-shadow: 
-                inset 5px 5px 10px #c6c9d0,
-                inset -5px -5px 10px #ffffff;
-            transform: scale(0.96);
-        }
+    .clock-text{ font-weight:700; letter-spacing:0.08em; transition:all var(--transition); }
 
-        /* ---------------- EXTRA UI ---------------- */
-        .separator {
-            animation: blink 1s infinite;
-        }
-        @keyframes blink {
-            50% { opacity: 0.25; }
-        }
+    .sep {
+      font-size: 0.9em;
+      animation: blink 1s infinite;
+      opacity:0.95;
+    }
+    @keyframes blink{ 0%,100%{opacity:1}50%{opacity:0.25} }
 
-        /* Glass center wrapper */
-        .glass-box {
-            backdrop-filter: blur(18px);
-            background: rgba(255,255,255,0.06);
-            border-radius: 22px;
-            padding: 25px 45px;
-            transition: all 0.5s ease;
-        }
+    /* seconds flip */
+    .seconds-elem{
+      display:inline-block;
+      transform-origin:center;
+      transition: transform 260ms cubic-bezier(.2,.9,.3,1);
+    }
+    .seconds-elem.flip {
+      transform: rotateX(180deg);
+    }
 
-        /* Buttons */
-        .circle-btn {
-            transition: all .3s ease-in-out;
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            display: flex;
-            font-weight: 700;
-            justify-content: center;
-            align-items: center;
-            font-size: 13px;
-        }
+    /* Date and meta area */
+    .meta-row{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
+    .chip{
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:600;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
 
-    </style>
+    /* Buttons container center */
+    .controls{
+      margin-top:10px;
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .btn--primary{
+      width:68px; height:68px; border-radius:999px; display:flex; align-items:center; justify-content:center;
+      font-weight:700; font-size:13px; cursor:pointer; transition: all 220ms ease;
+    }
+
+    .btn--secondary{
+      padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:700; box-shadow: 0 6px 20px rgba(2,6,23,0.06);
+    }
+
+    /* particle canvas absolute */
+    #particles {
+      position: fixed; inset:0; z-index:0; pointer-events:none;
+    }
+
+    /* layout for mobile */
+    @media (max-width:640px){
+      .clock-text{ font-size: clamp(36px, 12vw, 64px); }
+      .chip{ font-size:12px; padding:7px 10px; }
+      .btn--primary{ width:56px; height:56px; }
+    }
+
+  </style>
 </head>
+<body class="dark-mode">
 
-<body class="dark-mode flex flex-col items-center justify-center min-h-screen px-4">
+  <!-- Particle background canvas -->
+  <canvas id="particles" aria-hidden="true"></canvas>
 
-    <!-- MAIN CLOCK GLASS BOX -->
-    <div id="glassBox" class="glass-box flex flex-col items-center text-center">
+  <!-- Main glass card (center) -->
+  <main class="glass z-10" role="main" aria-labelledby="pageTitle">
 
-        <div id="clock" class="flex items-end gap-4 text-7xl sm:text-8xl md:text-9xl font-bold dark-clock">
-            <span id="hours">00</span>
-            <span class="separator pb-3">:</span>
-            <span id="minutes">00</span>
-            <span class="separator pb-3">:</span>
-            <span id="seconds" class="text-6xl md:text-8xl opacity-80">00</span>
-            <span id="amPm" class="text-3xl md:text-4xl pl-4"></span>
-        </div>
+    <h1 id="pageTitle" class="sr-only">Aesthetic Digital Clock</h1>
 
-        <div id="date" class="mt-4 text-xl sm:text-2xl opacity-80 tracking-widest dark-clock"></div>
+    <section class="clock-wrap">
 
-    </div>
+      <div class="clock-row">
+        <div id="hoursEl" class="clock-text text-[5.8rem] sm:text-[7.2rem] md:text-[8.8rem]">00</div>
+        <div class="sep text-5xl md:text-7xl">:</div>
+        <div id="minutesEl" class="clock-text text-[5.8rem] sm:text-[7.2rem] md:text-[8.8rem]">00</div>
+        <div class="sep text-5xl md:text-7xl">:</div>
+        <div id="secondsEl" class="clock-text text-[3.2rem] sm:text-[4.4rem] md:text-[5.4rem] seconds-elem" aria-hidden="true">00</div>
+        <div id="ampmEl" class="text-xl sm:text-3xl md:text-4xl ml-3 opacity-90"> </div>
+      </div>
 
-    <!-- BUTTONS CENTERED BELOW -->
-    <div class="flex gap-6 mt-10">
+      <div id="dateEl" class="text-base sm:text-lg md:text-xl opacity-80 tracking-widest">MON, JAN 01</div>
 
-        <!-- Time Format Button -->
-        <button id="timeBtn" class="circle-btn dark-btn">
-            24H
-        </button>
+      <div class="meta-row" role="region" aria-label="status chips">
+        <div id="greeting" class="chip bg-white/5 rounded-full text-sm">Hello 👋</div>
+        <div id="weatherChip" class="chip bg-white/5 rounded-full text-sm" aria-live="polite">Weather — fetching…</div>
+        <div id="quoteChip" class="chip bg-white/5 rounded-full text-sm">“Loading quotes…”</div>
+      </div>
 
-        <!-- Theme Button -->
-        <button id="themeBtn" class="circle-btn dark-btn">
-            ☀️
-        </button>
+    </section>
 
-    </div>
+    <!-- controls (center) -->
+    <nav class="controls" aria-label="Clock controls">
 
+      <button id="formatBtn" class="btn--primary" aria-pressed="false" title="Toggle 12/24 hour format">24H</button>
 
-    <!-- SCRIPT -->
-    <script>
-        const hours = document.getElementById("hours");
-        const minutes = document.getElementById("minutes");
-        const seconds = document.getElementById("seconds");
-        const amPm = document.getElementById("amPm");
-        const dateBox = document.getElementById("date");
+      <button id="themeBtn" class="btn--primary" aria-pressed="true" title="Toggle theme">☀️</button>
 
-        const body = document.body;
-        const timeBtn = document.getElementById("timeBtn");
-        const themeBtn = document.getElementById("themeBtn");
-        const glassBox = document.getElementById("glassBox");
-        const clock = document.getElementById("clock");
+      <button id="refreshWeatherBtn" class="btn--secondary" title="Refresh weather">Refresh Weather</button>
 
-        let is24 = true;
-        let isDark = true;
+    </nav>
 
-        function updateClock() {
-            const now = new Date();
-            let h = now.getHours();
-            let m = now.getMinutes();
-            let s = now.getSeconds();
+    <!-- optional footer small -->
+    <div class="mt-6 text-xs opacity-60">Tip: Page uses browser location for weather (you can decline). If site shows old commit after deploy — see comments below.</div>
 
-            // Date
-            const d = now.toLocaleDateString("en-US", {
-                weekday: "long",
-                month: "short",
-                day: "numeric"
-            }).toUpperCase();
-            dateBox.textContent = d;
+  </main>
 
-            // Format
-            let ap = "";
-            if (!is24) {
-                ap = h >= 12 ? "PM" : "AM";
-                h = h % 12 || 12;
-            }
+  <!-- Script: all logic -->
+  <script>
+  /* =========================
+     Helpful notes for GitHub Pages / GH Actions cache:
+     - Meta tags at top help but best to serve HTTP headers:
+       Cache-Control: no-cache, no-store, must-revalidate
+       Pragma: no-cache
+       Expires: 0
+     - If you use GitHub Actions, set artifact names uniquely (index.html?v=build-123)
+       or add a step to set Cache-Control headers using GitHub Pages or Netlify settings.
+     - Remove service workers (below we attempt to unregister).
+     - If still problematic, increment a query param on static asset URLs (e.g., tailwind? v=YYYYMMDD).
+     ========================= */
 
-            hours.textContent = String(h).padStart(2, "0");
-            minutes.textContent = String(m).padStart(2, "0");
-            seconds.textContent = String(s).padStart(2, "0");
-            amPm.textContent = ap;
-        }
+  // Unregister any previously installed service worker (fixes old cached versions)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(reg => { try { reg.unregister(); } catch(e){} });
+    }).catch(()=>{});
+    // Also clear controlled clients reload attempt
+    if (navigator.serviceWorker.controller) {
+      try { navigator.serviceWorker.controller.postMessage({ action: 'skipWaiting' }); } catch(e){}
+    }
+  }
 
-        setInterval(updateClock, 1000);
-        updateClock();
+  // Basic utilities
+  const $ = id => document.getElementById(id);
 
-        // Toggle Format
-        timeBtn.addEventListener("click", () => {
-            is24 = !is24;
-            timeBtn.textContent = is24 ? "24H" : "12H";
-            updateClock();
+  // Elements
+  const hoursEl = $('hoursEl');
+  const minutesEl = $('minutesEl');
+  const secondsEl = $('secondsEl');
+  const ampmEl = $('ampmEl');
+  const dateEl = $('dateEl');
+  const greetingEl = $('greeting');
+  const weatherChip = $('weatherChip');
+  const quoteChip = $('quoteChip');
+
+  const formatBtn = $('formatBtn');
+  const themeBtn = $('themeBtn');
+  const refreshWeatherBtn = $('refreshWeatherBtn');
+
+  // State
+  let use24 = true;
+  let darkMode = true;
+
+  // Quotes (small set; you can replace or extend)
+  const quotes = [
+    "Simplicity is the ultimate sophistication.",
+    "Design is intelligence made visible.",
+    "Less, but better.",
+    "Stay curious. Keep learning.",
+    "Make it simple, but significant.",
+    "Small steps every day."
+  ];
+
+  // Weather code mapping (Open-Meteo)
+  const weatherCodes = {
+    0: "Clear",
+    1: "Mainly clear",
+    2: "Partly cloudy",
+    3: "Overcast",
+    45: "Fog",
+    48: "Depositing rime fog",
+    51: "Light drizzle",
+    53: "Moderate drizzle",
+    55: "Dense drizzle",
+    56: "Freezing drizzle",
+    57: "Dense freezing drizzle",
+    61: "Slight rain",
+    63: "Moderate rain",
+    65: "Heavy rain",
+    66: "Freezing rain",
+    67: "Heavy freezing rain",
+    71: "Slight snow",
+    73: "Moderate snow",
+    75: "Heavy snow",
+    77: "Snow grains",
+    80: "Slight rain showers",
+    81: "Moderate rain showers",
+    82: "Violent rain showers",
+    85: "Slight snow showers",
+    86: "Heavy snow showers",
+    95: "Thunderstorm",
+    96: "Thunderstorm with slight hail",
+    99: "Thunderstorm with heavy hail"
+  };
+
+  // Clock update with flip animation for seconds
+  let lastSecond = -1;
+  function updateClock(){
+    const now = new Date();
+    let h = now.getHours();
+    let m = now.getMinutes();
+    let s = now.getSeconds();
+
+    // Date
+    const opts = { weekday:'short', month:'short', day:'numeric' };
+    dateEl.textContent = now.toLocaleDateString(undefined, opts).toUpperCase();
+
+    // Greeting
+    const hour = now.getHours();
+    let greet = 'Hello';
+    if (hour < 12) greet = 'Good Morning';
+    else if (hour < 17) greet = 'Good Afternoon';
+    else greet = 'Good Evening';
+    greetingEl.textContent = `${greet} 👋`;
+
+    // Format
+    let ap = '';
+    let displayHours = h;
+    if (!use24) {
+      ap = h >= 12 ? 'PM' : 'AM';
+      displayHours = h % 12 || 12;
+    }
+    hoursEl.textContent = String(displayHours).padStart(2,'0');
+    minutesEl.textContent = String(m).padStart(2,'0');
+
+    // Flip animation every second tick
+    if (s !== lastSecond) {
+      lastSecond = s;
+      // animate seconds element
+      secondsEl.classList.remove('flip');
+      // Force reflow to restart the animation
+      void secondsEl.offsetWidth;
+      secondsEl.textContent = String(s).padStart(2,'0');
+      secondsEl.classList.add('flip');
+      setTimeout(()=> secondsEl.classList.remove('flip'), 300);
+    } else {
+      secondsEl.textContent = String(s).padStart(2,'0');
+    }
+
+    ampmEl.textContent = ap;
+  }
+
+  // Initial clock and interval
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // Toggle format button
+  formatBtn.addEventListener('click', () => {
+    use24 = !use24;
+    formatBtn.textContent = use24 ? '24H' : '12H';
+    formatBtn.setAttribute('aria-pressed', String(!use24));
+    updateClock();
+  });
+
+  // Toggle theme button: use classList.toggle to avoid wiping other classes
+  themeBtn.addEventListener('click', () => {
+    darkMode = !darkMode;
+    document.body.classList.toggle('dark-mode', darkMode);
+    document.body.classList.toggle('light-mode', !darkMode);
+    // update button visuals without replacing other classes
+    themeBtn.textContent = darkMode ? '☀️' : '🌙';
+    // update btn classes for consistent styles (add/remove feature classes)
+    const btns = document.querySelectorAll('.btn--primary');
+    btns.forEach(b => {
+      b.classList.toggle('dark-btn', darkMode);
+      b.classList.toggle('light-btn', !darkMode);
+      // also keep consistent base class
+      b.classList.add('btn--primary');
+    });
+  });
+
+  // Refresh weather button
+  refreshWeatherBtn.addEventListener('click', () => {
+    fetchWeather(true);
+  });
+
+  // Randomize quote
+  function pickQuote(){
+    const q = quotes[Math.floor(Math.random()*quotes.length)];
+    quoteChip.textContent = `“${q}”`;
+  }
+  pickQuote();
+
+  /* ============================
+     Weather fetch using Open-Meteo (no API key)
+     docs: https://open-meteo.com/
+     ============================ */
+  let lastCoords = null;
+  async function fetchWeather(force=false){
+    weatherChip.textContent = 'Weather — fetching…';
+    try{
+      // Try to use previously obtained coords if not forcing and exists
+      if (!force && lastCoords) {
+        await getWeatherForCoords(lastCoords.lat, lastCoords.lon);
+        return;
+      }
+
+      // Get location
+      if (!navigator.geolocation){
+        weatherChip.textContent = 'Weather unavailable: geolocation not supported';
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(async pos => {
+        const lat = pos.coords.latitude.toFixed(4);
+        const lon = pos.coords.longitude.toFixed(4);
+        lastCoords = {lat,lon};
+        await getWeatherForCoords(lat,lon);
+      }, err => {
+        weatherChip.textContent = 'Weather unavailable: location denied';
+      }, { enableHighAccuracy:false, maximumAge: 60*1000, timeout: 10_000 });
+
+    }catch(e){
+      weatherChip.textContent = 'Weather error';
+    }
+  }
+
+  async function getWeatherForCoords(lat, lon){
+    try{
+      // Use open-meteo current_weather endpoint
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
+      const res = await fetch(url, {cache: "no-store"});
+      if (!res.ok) throw new Error('no response');
+      const data = await res.json();
+      if (data && data.current_weather){
+        const cw = data.current_weather;
+        const temp = Math.round(cw.temperature);
+        const code = cw.weathercode;
+        const desc = (weatherCodes[code] || 'Unknown');
+        weatherChip.textContent = `${temp}°C — ${desc}`;
+      } else {
+        weatherChip.textContent = 'Weather unavailable';
+      }
+    }catch(e){
+      weatherChip.textContent = 'Weather fetch failed';
+    }
+  }
+
+  // Initial weather attempt
+  fetchWeather();
+
+  /* =========================
+     Particles background (simple, lightweight)
+     ========================= */
+  (function(){
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let w=canvas.width=innerWidth;
+    let h=canvas.height=innerHeight;
+    const particles = [];
+    const count = Math.round((w*h)/90000); // scale with screen
+
+    window.addEventListener('resize',()=>{
+      w=canvas.width=innerWidth;
+      h=canvas.height=innerHeight;
+    });
+
+    function rand(min,max){ return Math.random()*(max-min)+min; }
+
+    function create(){
+      for(let i=0;i<count;i++){
+        particles.push({
+          x: rand(0,w),
+          y: rand(0,h),
+          r: rand(0.6,1.8),
+          vx: rand(-0.15,0.15),
+          vy: rand(-0.1,0.1),
+          alpha: rand(0.03,0.14)
         });
+      }
+    }
+    create();
 
-        // Toggle Theme
-        themeBtn.addEventListener("click", () => {
-            isDark = !isDark;
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      particles.forEach(p=>{
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < -10) p.x = w+10;
+        if (p.x > w+10) p.x = -10;
+        if (p.y < -10) p.y = h+10;
+        if (p.y > h+10) p.y = -10;
 
-            if (isDark) {
-                body.className = "dark-mode";
-                themeBtn.textContent = "☀️";
-                timeBtn.className = "circle-btn dark-btn";
-                themeBtn.className = "circle-btn dark-btn";
-                clock.classList.remove("light-clock");
-                clock.classList.add("dark-clock");
-            } else {
-                body.className = "light-mode";
-                themeBtn.textContent = "🌙";
-                timeBtn.className = "circle-btn light-btn";
-                themeBtn.className = "circle-btn light-btn";
-                clock.classList.remove("dark-clock");
-                clock.classList.add("light-clock");
-            }
-        });
-    </script>
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(0,249,224,${p.alpha})`;
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
 
+  /* =========================
+     Minor progressive enhancement:
+     - keyboard shortcuts:
+       T toggles theme, F toggles 12/24, W refresh weather
+     ========================= */
+  window.addEventListener('keydown', (e)=>{
+    if (e.key === 't' || e.key === 'T') themeBtn.click();
+    if (e.key === 'f' || e.key === 'F') formatBtn.click();
+    if (e.key === 'w' || e.key === 'W') refreshWeatherBtn.click();
+  });
+
+  </script>
 </body>
 </html>
