@@ -2,35 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <!-- CACHE-FIX META TAGS -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ultimate Aesthetic Digital Clock</title>
 
-  <!-- Tailwind CDN with version param for cache-busting -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp&v=2025.11.26" defer></script>
+  <!-- Tailwind CDN with version param (cache-busting) -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp&v=20251126" defer></script>
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
   <style>
     :root{
       --glass-bg: rgba(255,255,255,0.06);
       --glass-border: rgba(255,255,255,0.08);
-      --transition: 400ms;
+      --neon: #00ffd7;
+      --accent-dark: rgba(0,255,215,0.12);
     }
 
-    html,body{
-      height:100%;
+    html,body{height:100%}
+    body{
+      font-family: "Orbitron", sans-serif;
       margin:0;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
-    }
-
-    body {
-      font-family: 'Orbitron', 'Share Tech Mono', monospace;
-      transition: background var(--transition), color var(--transition);
+      transition: background .45s ease, color .45s ease;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -38,499 +38,428 @@
       overflow:hidden;
     }
 
-    /* -------- Dark (Neon) -------- */
-    body.dark-mode{
-      background: radial-gradient(1000px 600px at 10% 10%, rgba(2,6,23,0.75), #030409 40%, #000000 100%);
-      color: #00f9e0;
+    /* DARK THEME */
+    body.theme-dark{
+      background: radial-gradient(circle at 10% 10%, #081022 0%, #020206 50%, #000000 100%);
+      color: #dffbf7;
     }
-    .dark-mode .glass {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid rgba(0,255,230,0.06);
-      box-shadow: 0 8px 40px rgba(0,255,230,0.03), inset 0 1px 0 rgba(255,255,255,0.02);
-    }
-    .dark-mode .clock-text{
-      color: #00f9e0;
+    .dark-clock {
       text-shadow:
-        0 0 6px rgba(0,249,224,0.6),
-        0 0 14px rgba(0,249,224,0.35),
-        0 0 40px rgba(0,170,255,0.12);
-    }
-    .dark-mode .btn--primary {
-      background: rgba(0,255,230,0.06);
-      color: #00f9e0;
-      border: 1px solid rgba(0,255,230,0.14);
-      box-shadow: 0 6px 18px rgba(0,255,230,0.06);
-    }
-    .dark-mode .btn--primary:hover{
-      background: rgba(0,255,230,0.13);
-      box-shadow: 0 10px 30px rgba(0,255,230,0.12);
-      transform: translateY(-3px) scale(1.02);
+        0 0 6px rgba(0,255,215,0.8),
+        0 0 14px rgba(0,255,215,0.45),
+        0 0 32px rgba(0,170,255,0.15);
+      color: var(--neon);
     }
 
-    /* -------- Light (Neumorphism + Glass) -------- */
-    body.light-mode{
-      background: linear-gradient(180deg,#e9eef7 0%, #f5f7fb 100%);
+    /* LIGHT THEME */
+    body.theme-light{
+      background: linear-gradient(180deg,#eef3fb 0%, #e6eaef 100%);
       color:#1f2937;
     }
-    .light-mode .glass{
-      background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(245,247,250,0.7));
-      border: 1px solid rgba(0,0,0,0.03);
-      box-shadow: 16px 16px 30px rgba(183,190,200,0.25), -14px -14px 30px rgba(255,255,255,0.9);
-    }
-    .light-mode .clock-text{
-      color:#0f172a;
-      text-shadow: 0 2px 6px rgba(15,23,42,0.06);
-    }
-    .light-mode .btn--primary{
-      background: #eef3fb;
+    .light-clock {
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.06);
       color: #0f172a;
-      border: none;
-      box-shadow: 7px 7px 18px rgba(184,185,190,0.35), -7px -7px 18px rgba(255,255,255,0.9);
-    }
-    .light-mode .btn--primary:hover{
-      transform: translateY(-2px) scale(0.995);
-      box-shadow: inset 6px 6px 12px rgba(184,185,190,0.22), inset -6px -6px 12px rgba(255,255,255,0.7);
     }
 
-    /* Glass center card */
+    /* Glass box */
     .glass {
-      width: min(920px, 92vw);
-      max-width: 920px;
-      padding: clamp(20px, 3.4vw, 36px);
-      border-radius: 20px;
+      border-radius: 18px;
+      padding: 28px 40px;
       display:flex;
       flex-direction:column;
-      gap: 18px;
       align-items:center;
-      justify-content:center;
-      transition: all var(--transition) ease;
-      backdrop-filter: blur(12px) saturate(140%);
-    }
-
-    .clock-wrap{ display:flex; flex-direction:column; align-items:center; gap:8px; }
-
-    .clock-row{
-      display:flex;
-      align-items:flex-end;
-      gap: 10px;
-      justify-content:center;
-    }
-
-    .clock-text{ font-weight:700; letter-spacing:0.08em; transition:all var(--transition); }
-
-    .sep {
-      font-size: 0.9em;
-      animation: blink 1s infinite;
-      opacity:0.95;
-    }
-    @keyframes blink{ 0%,100%{opacity:1}50%{opacity:0.25} }
-
-    /* seconds flip */
-    .seconds-elem{
-      display:inline-block;
-      transform-origin:center;
-      transition: transform 260ms cubic-bezier(.2,.9,.3,1);
-    }
-    .seconds-elem.flip {
-      transform: rotateX(180deg);
-    }
-
-    /* Date and meta area */
-    .meta-row{
-      display:flex;
-      gap:18px;
-      align-items:center;
-      justify-content:center;
-      flex-wrap:wrap;
-      margin-top:6px;
-    }
-    .chip{
-      padding:8px 12px;
-      border-radius:999px;
-      font-size:13px;
-      font-weight:600;
-      display:flex;
-      gap:8px;
-      align-items:center;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    }
-
-    /* Buttons container center */
-    .controls{
-      margin-top:10px;
-      display:flex;
       gap:14px;
-      align-items:center;
-      justify-content:center;
+      backdrop-filter: blur(10px) saturate(120%);
+      transition: box-shadow .35s ease, background .35s ease, transform .25s ease;
+      border: 1px solid rgba(255,255,255,0.04);
+      max-width:980px;
+      width:90%;
+    }
+    body.theme-light .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(245,247,250,0.6));
+      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: 14px 20px 40px rgba(190,200,215,0.45);
+    }
+    body.theme-dark .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(0,255,215,0.06);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 60px rgba(0,255,215,0.03);
     }
 
-    .btn--primary{
-      width:68px; height:68px; border-radius:999px; display:flex; align-items:center; justify-content:center;
-      font-weight:700; font-size:13px; cursor:pointer; transition: all 220ms ease;
+    /* Clock typography */
+    .clock-row{display:flex; align-items:end; gap:12px; justify-content:center;}
+    .digits{font-weight:700; letter-spacing:0.04em;}
+    .hours, .minutes { font-size: clamp(48px, 9vw, 96px); }
+    .seconds { font-size: clamp(28px, 5.5vw, 52px); opacity:.9; transform-origin:center; display:inline-block; }
+    .ampm { font-size: clamp(14px,2.6vw,22px); align-self:flex-end; margin-bottom:6px; opacity:.85;}
+
+    /* blinking separator */
+    .sep{animation: blink 1s infinite;}
+    @keyframes blink{50%{opacity:.25}}
+
+    /* Buttons - centered */
+    .controls{display:flex; gap:18px; margin-top:8px; align-items:center; justify-content:center;}
+    .circle-btn{
+      width:66px; height:66px; border-radius:999px; display:flex; align-items:center; justify-content:center;
+      font-weight:700; cursor:pointer; user-select:none; transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+      border: none;
+    }
+    .circle-btn:active{ transform: translateY(2px) scale(.995) }
+
+    /* dark button */
+    .btn-dark{
+      background: rgba(0,255,215,0.06);
+      color: var(--neon);
+      border: 1px solid rgba(0,255,215,0.12);
+      box-shadow: 0 8px 30px rgba(0,255,215,0.04);
+    }
+    .btn-dark:hover{
+      background: rgba(0,255,215,0.12);
+      box-shadow: 0 12px 40px rgba(0,255,215,0.12);
     }
 
-    .btn--secondary{
-      padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:700; box-shadow: 0 6px 20px rgba(2,6,23,0.06);
+    /* light button */
+    .btn-light{
+      background: #eef3fb;
+      color: #0f172a;
+      box-shadow: 6px 6px 18px rgba(190,200,215,0.6), -6px -6px 18px rgba(255,255,255,0.8);
+      border: 1px solid rgba(0,0,0,0.02);
+    }
+    .btn-light:hover{
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: inset 6px 6px 20px rgba(190,200,215,0.25);
     }
 
-    /* particle canvas absolute */
-    #particles {
-      position: fixed; inset:0; z-index:0; pointer-events:none;
+    /* Info row */
+    .info-row{display:flex; gap:18px; align-items:center; justify-content:center; margin-top:6px; flex-wrap:wrap;}
+    .chip{
+      padding:8px 12px; border-radius:999px; font-weight:600; font-size:14px;
+      backdrop-filter: blur(6px);
     }
+    body.theme-dark .chip{ background: rgba(0,0,0,0.28); color:var(--neon); border:1px solid rgba(0,255,215,0.06) }
+    body.theme-light .chip{ background: rgba(255,255,255,0.7); color:#0f172a; border:1px solid rgba(0,0,0,0.04) }
 
-    /* layout for mobile */
+    /* quote area */
+    .quote{max-width:740px; text-align:center; font-size:clamp(14px,1.6vw,18px); opacity:.9; margin-top:8px;}
+
+    /* particles canvas full screen behind content */
+    #particles { position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+    /* responsive tweaks */
     @media (max-width:640px){
-      .clock-text{ font-size: clamp(36px, 12vw, 64px); }
-      .chip{ font-size:12px; padding:7px 10px; }
-      .btn--primary{ width:56px; height:56px; }
+      .glass{padding:18px 20px;}
+      .controls{gap:12px}
+      .circle-btn{width:56px;height:56px}
     }
-
   </style>
 </head>
-<body class="dark-mode">
+<body class="theme-dark">
 
-  <!-- Particle background canvas -->
-  <canvas id="particles" aria-hidden="true"></canvas>
+  <!-- particles canvas (z-index 0) -->
+  <canvas id="particles"></canvas>
 
-  <!-- Main glass card (center) -->
-  <main class="glass z-10" role="main" aria-labelledby="pageTitle">
-
-    <h1 id="pageTitle" class="sr-only">Aesthetic Digital Clock</h1>
-
-    <section class="clock-wrap">
-
-      <div class="clock-row">
-        <div id="hoursEl" class="clock-text text-[5.8rem] sm:text-[7.2rem] md:text-[8.8rem]">00</div>
-        <div class="sep text-5xl md:text-7xl">:</div>
-        <div id="minutesEl" class="clock-text text-[5.8rem] sm:text-[7.2rem] md:text-[8.8rem]">00</div>
-        <div class="sep text-5xl md:text-7xl">:</div>
-        <div id="secondsEl" class="clock-text text-[3.2rem] sm:text-[4.4rem] md:text-[5.4rem] seconds-elem" aria-hidden="true">00</div>
-        <div id="ampmEl" class="text-xl sm:text-3xl md:text-4xl ml-3 opacity-90"> </div>
+  <!-- main container (z-index > canvas) -->
+  <main style="position:relative; z-index:2; width:100%; display:flex; align-items:center; justify-content:center; padding:40px 16px;">
+    <section class="glass" role="region" aria-label="Aesthetic digital clock">
+      <!-- clock -->
+      <div class="clock-row" aria-hidden="false">
+        <div class="digits hours dark-clock" id="hours">00</div>
+        <div class="digits sep dark-clock">:</div>
+        <div class="digits minutes dark-clock" id="minutes">00</div>
+        <div class="digits sep dark-clock">:</div>
+        <div class="digits seconds dark-clock" id="seconds">00</div>
+        <div class="ampm dark-clock" id="ampm"></div>
       </div>
 
-      <div id="dateEl" class="text-base sm:text-lg md:text-xl opacity-80 tracking-widest">MON, JAN 01</div>
+      <!-- date -->
+      <div id="date" class="text-sm sm:text-base opacity-80 dark-clock"></div>
 
-      <div class="meta-row" role="region" aria-label="status chips">
-        <div id="greeting" class="chip bg-white/5 rounded-full text-sm">Hello 👋</div>
-        <div id="weatherChip" class="chip bg-white/5 rounded-full text-sm" aria-live="polite">Weather — fetching…</div>
-        <div id="quoteChip" class="chip bg-white/5 rounded-full text-sm">“Loading quotes…”</div>
+      <!-- chips: greeting, weather, format -->
+      <div class="info-row" aria-hidden="true">
+        <div id="greeting" class="chip">HELLO</div>
+        <div id="weatherChip" class="chip">Weather: —</div>
+        <div id="formatChip" class="chip">24H</div>
       </div>
 
+      <!-- quote -->
+      <div id="quote" class="quote">“Loading quote...”</div>
+
+      <!-- controls (centered) -->
+      <div class="controls" role="toolbar" aria-label="Clock controls">
+        <button id="formatBtn" class="circle-btn btn-dark" title="Toggle 12H / 24H">24H</button>
+        <button id="themeBtn" class="circle-btn btn-dark" title="Toggle Theme">☀️</button>
+        <button id="refreshWeather" class="circle-btn btn-dark" title="Refresh Weather">⟳</button>
+      </div>
     </section>
-
-    <!-- controls (center) -->
-    <nav class="controls" aria-label="Clock controls">
-
-      <button id="formatBtn" class="btn--primary" aria-pressed="false" title="Toggle 12/24 hour format">24H</button>
-
-      <button id="themeBtn" class="btn--primary" aria-pressed="true" title="Toggle theme">☀️</button>
-
-      <button id="refreshWeatherBtn" class="btn--secondary" title="Refresh weather">Refresh Weather</button>
-
-    </nav>
-
-    <!-- optional footer small -->
-    <div class="mt-6 text-xs opacity-60">Tip: Page uses browser location for weather (you can decline). If site shows old commit after deploy — see comments below.</div>
-
   </main>
 
-  <!-- Script: all logic -->
+  <!-- SCRIPTS -->
   <script>
-  /* =========================
-     Helpful notes for GitHub Pages / GH Actions cache:
-     - Meta tags at top help but best to serve HTTP headers:
-       Cache-Control: no-cache, no-store, must-revalidate
-       Pragma: no-cache
-       Expires: 0
-     - If you use GitHub Actions, set artifact names uniquely (index.html?v=build-123)
-       or add a step to set Cache-Control headers using GitHub Pages or Netlify settings.
-     - Remove service workers (below we attempt to unregister).
-     - If still problematic, increment a query param on static asset URLs (e.g., tailwind? v=YYYYMMDD).
-     ========================= */
+    /* ----------------- Utilities & State ----------------- */
+    const state = {
+      is24: true,
+      theme: 'dark', // 'dark' or 'light'
+      quoteIndex: 0
+    };
 
-  // Unregister any previously installed service worker (fixes old cached versions)
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(regs => {
-      regs.forEach(reg => { try { reg.unregister(); } catch(e){} });
-    }).catch(()=>{});
-    // Also clear controlled clients reload attempt
-    if (navigator.serviceWorker.controller) {
-      try { navigator.serviceWorker.controller.postMessage({ action: 'skipWaiting' }); } catch(e){}
-    }
-  }
+    // Elements
+    const elHours = document.getElementById('hours');
+    const elMinutes = document.getElementById('minutes');
+    const elSeconds = document.getElementById('seconds');
+    const elAmpm = document.getElementById('ampm');
+    const elDate = document.getElementById('date');
+    const elGreeting = document.getElementById('greeting');
+    const elWeatherChip = document.getElementById('weatherChip');
+    const elFormatChip = document.getElementById('formatChip');
+    const elQuote = document.getElementById('quote');
 
-  // Basic utilities
-  const $ = id => document.getElementById(id);
+    const btnFormat = document.getElementById('formatBtn');
+    const btnTheme = document.getElementById('themeBtn');
+    const btnRefreshWeather = document.getElementById('refreshWeather');
 
-  // Elements
-  const hoursEl = $('hoursEl');
-  const minutesEl = $('minutesEl');
-  const secondsEl = $('secondsEl');
-  const ampmEl = $('ampmEl');
-  const dateEl = $('dateEl');
-  const greetingEl = $('greeting');
-  const weatherChip = $('weatherChip');
-  const quoteChip = $('quoteChip');
+    const body = document.body;
 
-  const formatBtn = $('formatBtn');
-  const themeBtn = $('themeBtn');
-  const refreshWeatherBtn = $('refreshWeatherBtn');
+    /* ----------------- Quotes (local list) ----------------- */
+    const quotes = [
+      "Small steps every day — that’s how mountains move.",
+      "Design is the silent ambassador of your brand.",
+      "Simplicity is the ultimate sophistication.",
+      "The future is built by those who show up.",
+      "Make it useful. Then make it beautiful.",
+      "Code is poetry; write something worth reading.",
+      "Good design is obvious. Great design is transparent."
+    ];
 
-  // State
-  let use24 = true;
-  let darkMode = true;
+    /* ----------------- Clock & UI Functions ----------------- */
+    function updateClock(){
+      const now = new Date();
+      let h = now.getHours();
+      let m = now.getMinutes();
+      let s = now.getSeconds();
 
-  // Quotes (small set; you can replace or extend)
-  const quotes = [
-    "Simplicity is the ultimate sophistication.",
-    "Design is intelligence made visible.",
-    "Less, but better.",
-    "Stay curious. Keep learning.",
-    "Make it simple, but significant.",
-    "Small steps every day."
-  ];
+      // Greeting
+      const hour = h;
+      let greet = 'Hello';
+      if(hour < 12) greet = 'Good Morning';
+      else if(hour < 17) greet = 'Good Afternoon';
+      else greet = 'Good Evening';
+      elGreeting.textContent = greet;
 
-  // Weather code mapping (Open-Meteo)
-  const weatherCodes = {
-    0: "Clear",
-    1: "Mainly clear",
-    2: "Partly cloudy",
-    3: "Overcast",
-    45: "Fog",
-    48: "Depositing rime fog",
-    51: "Light drizzle",
-    53: "Moderate drizzle",
-    55: "Dense drizzle",
-    56: "Freezing drizzle",
-    57: "Dense freezing drizzle",
-    61: "Slight rain",
-    63: "Moderate rain",
-    65: "Heavy rain",
-    66: "Freezing rain",
-    67: "Heavy freezing rain",
-    71: "Slight snow",
-    73: "Moderate snow",
-    75: "Heavy snow",
-    77: "Snow grains",
-    80: "Slight rain showers",
-    81: "Moderate rain showers",
-    82: "Violent rain showers",
-    85: "Slight snow showers",
-    86: "Heavy snow showers",
-    95: "Thunderstorm",
-    96: "Thunderstorm with slight hail",
-    99: "Thunderstorm with heavy hail"
-  };
+      // Date
+      const opts = { weekday:'long', month:'short', day:'numeric' };
+      elDate.textContent = now.toLocaleDateString(undefined, opts).toUpperCase();
 
-  // Clock update with flip animation for seconds
-  let lastSecond = -1;
-  function updateClock(){
-    const now = new Date();
-    let h = now.getHours();
-    let m = now.getMinutes();
-    let s = now.getSeconds();
-
-    // Date
-    const opts = { weekday:'short', month:'short', day:'numeric' };
-    dateEl.textContent = now.toLocaleDateString(undefined, opts).toUpperCase();
-
-    // Greeting
-    const hour = now.getHours();
-    let greet = 'Hello';
-    if (hour < 12) greet = 'Good Morning';
-    else if (hour < 17) greet = 'Good Afternoon';
-    else greet = 'Good Evening';
-    greetingEl.textContent = `${greet} 👋`;
-
-    // Format
-    let ap = '';
-    let displayHours = h;
-    if (!use24) {
-      ap = h >= 12 ? 'PM' : 'AM';
-      displayHours = h % 12 || 12;
-    }
-    hoursEl.textContent = String(displayHours).padStart(2,'0');
-    minutesEl.textContent = String(m).padStart(2,'0');
-
-    // Flip animation every second tick
-    if (s !== lastSecond) {
-      lastSecond = s;
-      // animate seconds element
-      secondsEl.classList.remove('flip');
-      // Force reflow to restart the animation
-      void secondsEl.offsetWidth;
-      secondsEl.textContent = String(s).padStart(2,'0');
-      secondsEl.classList.add('flip');
-      setTimeout(()=> secondsEl.classList.remove('flip'), 300);
-    } else {
-      secondsEl.textContent = String(s).padStart(2,'0');
-    }
-
-    ampmEl.textContent = ap;
-  }
-
-  // Initial clock and interval
-  updateClock();
-  setInterval(updateClock, 1000);
-
-  // Toggle format button
-  formatBtn.addEventListener('click', () => {
-    use24 = !use24;
-    formatBtn.textContent = use24 ? '24H' : '12H';
-    formatBtn.setAttribute('aria-pressed', String(!use24));
-    updateClock();
-  });
-
-  // Toggle theme button: use classList.toggle to avoid wiping other classes
-  themeBtn.addEventListener('click', () => {
-    darkMode = !darkMode;
-    document.body.classList.toggle('dark-mode', darkMode);
-    document.body.classList.toggle('light-mode', !darkMode);
-    // update button visuals without replacing other classes
-    themeBtn.textContent = darkMode ? '☀️' : '🌙';
-    // update btn classes for consistent styles (add/remove feature classes)
-    const btns = document.querySelectorAll('.btn--primary');
-    btns.forEach(b => {
-      b.classList.toggle('dark-btn', darkMode);
-      b.classList.toggle('light-btn', !darkMode);
-      // also keep consistent base class
-      b.classList.add('btn--primary');
-    });
-  });
-
-  // Refresh weather button
-  refreshWeatherBtn.addEventListener('click', () => {
-    fetchWeather(true);
-  });
-
-  // Randomize quote
-  function pickQuote(){
-    const q = quotes[Math.floor(Math.random()*quotes.length)];
-    quoteChip.textContent = `“${q}”`;
-  }
-  pickQuote();
-
-  /* ============================
-     Weather fetch using Open-Meteo (no API key)
-     docs: https://open-meteo.com/
-     ============================ */
-  let lastCoords = null;
-  async function fetchWeather(force=false){
-    weatherChip.textContent = 'Weather — fetching…';
-    try{
-      // Try to use previously obtained coords if not forcing and exists
-      if (!force && lastCoords) {
-        await getWeatherForCoords(lastCoords.lat, lastCoords.lon);
-        return;
+      // Format
+      let ampm = '';
+      if(!state.is24){
+        ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
       }
+      elHours.textContent = String(h).padStart(2,'0');
+      elMinutes.textContent = String(m).padStart(2,'0');
 
-      // Get location
-      if (!navigator.geolocation){
-        weatherChip.textContent = 'Weather unavailable: geolocation not supported';
-        return;
-      }
+      // seconds flip animation
+      elSeconds.textContent = String(s).padStart(2,'0');
+      elAmpm.textContent = ampm;
 
-      navigator.geolocation.getCurrentPosition(async pos => {
-        const lat = pos.coords.latitude.toFixed(4);
-        const lon = pos.coords.longitude.toFixed(4);
-        lastCoords = {lat,lon};
-        await getWeatherForCoords(lat,lon);
-      }, err => {
-        weatherChip.textContent = 'Weather unavailable: location denied';
-      }, { enableHighAccuracy:false, maximumAge: 60*1000, timeout: 10_000 });
+      // Add flip effect on seconds
+      elSeconds.animate([
+        { transform: 'rotateX(0deg)' },
+        { transform: 'rotateX(-20deg)' },
+        { transform: 'rotateX(0deg)' }
+      ], { duration: 260, easing: 'cubic-bezier(.2,.9,.2,1)' });
 
-    }catch(e){
-      weatherChip.textContent = 'Weather error';
+      // update chips
+      elFormatChip.textContent = state.is24 ? '24H' : '12H';
+      btnFormat.textContent = state.is24 ? '24H' : '12H';
     }
-  }
 
-  async function getWeatherForCoords(lat, lon){
-    try{
-      // Use open-meteo current_weather endpoint
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
-      const res = await fetch(url, {cache: "no-store"});
-      if (!res.ok) throw new Error('no response');
-      const data = await res.json();
-      if (data && data.current_weather){
-        const cw = data.current_weather;
-        const temp = Math.round(cw.temperature);
-        const code = cw.weathercode;
-        const desc = (weatherCodes[code] || 'Unknown');
-        weatherChip.textContent = `${temp}°C — ${desc}`;
+    // initial quote
+    function setQuote(){
+      state.quoteIndex = (state.quoteIndex + 1) % quotes.length;
+      elQuote.textContent = `“${quotes[state.quoteIndex]}”`;
+    }
+
+    /* ----------------- Theme toggle (safe classList usage) ----------------- */
+    function applyTheme(theme){
+      // set body classes but preserve others (do not overwrite)
+      state.theme = theme;
+      if(theme === 'dark'){
+        body.classList.remove('theme-light');
+        body.classList.add('theme-dark');
+        // update button styles
+        btnFormat.classList.remove('btn-light'); btnFormat.classList.add('btn-dark');
+        btnTheme.classList.remove('btn-light'); btnTheme.classList.add('btn-dark');
+        btnRefreshWeather.classList.remove('btn-light'); btnRefreshWeather.classList.add('btn-dark');
+
+        // clock style switches
+        document.querySelectorAll('.digits, .ampm, .sep').forEach(n => {
+          n.classList.remove('light-clock');
+          n.classList.add('dark-clock');
+        });
+        btnTheme.textContent = '☀️';
       } else {
-        weatherChip.textContent = 'Weather unavailable';
+        body.classList.remove('theme-dark');
+        body.classList.add('theme-light');
+
+        btnFormat.classList.remove('btn-dark'); btnFormat.classList.add('btn-light');
+        btnTheme.classList.remove('btn-dark'); btnTheme.classList.add('btn-light');
+        btnRefreshWeather.classList.remove('btn-dark'); btnRefreshWeather.classList.add('btn-light');
+
+        document.querySelectorAll('.digits, .ampm, .sep').forEach(n => {
+          n.classList.remove('dark-clock');
+          n.classList.add('light-clock');
+        });
+        btnTheme.textContent = '🌙';
       }
-    }catch(e){
-      weatherChip.textContent = 'Weather fetch failed';
     }
-  }
 
-  // Initial weather attempt
-  fetchWeather();
+    /* ----------------- Weather (Open-Meteo, no API key) ----------------- */
+    // open-meteo docs: https://open-meteo.com/
+    async function fetchWeather(lat, lon){
+      try {
+        // Open-Meteo endpoint: (current_weather)
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
+        const res = await fetch(url, { cache: "no-store" });
+        if(!res.ok) throw new Error('Weather fetch failed');
+        const data = await res.json();
+        // data.current_weather: { temperature, windspeed, weathercode }
+        const temp = data.current_weather?.temperature;
+        const wind = data.current_weather?.windspeed;
+        const code = data.current_weather?.weathercode;
+        elWeatherChip.textContent = `🌤 ${temp ?? '—'}°C • ${wind ?? '—'} km/h`;
+      } catch (err){
+        console.warn('Weather error', err);
+        elWeatherChip.textContent = 'Weather: unavailable';
+      }
+    }
 
-  /* =========================
-     Particles background (simple, lightweight)
-     ========================= */
-  (function(){
-    const canvas = document.getElementById('particles');
-    const ctx = canvas.getContext('2d');
-    let w=canvas.width=innerWidth;
-    let h=canvas.height=innerHeight;
-    const particles = [];
-    const count = Math.round((w*h)/90000); // scale with screen
+    // get location using Geolocation API (with fallback)
+    async function initWeather(){
+      elWeatherChip.textContent = 'Detecting weather…';
+      if(!navigator.geolocation){
+        elWeatherChip.textContent = 'Geolocation not supported';
+        return;
+      }
+      // try to get position (short timeout)
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          fetchWeather(lat, lon);
+        },
+        err => {
+          console.warn('Geolocation denied / error', err);
+          // fallback: approximate via IP-based free service? skip to unavailable
+          elWeatherChip.textContent = 'Weather: permission denied';
+        },
+        { enableHighAccuracy:false, timeout:8000, maximumAge:600000 }
+      );
+    }
 
-    window.addEventListener('resize',()=>{
-      w=canvas.width=innerWidth;
-      h=canvas.height=innerHeight;
-    });
+    /* ----------------- Particles Background (simple, performant) ----------------- */
+    (function particlesInit(){
+      const canvas = document.getElementById('particles');
+      const ctx = canvas.getContext('2d', { alpha:true });
+      let W = canvas.width = innerWidth;
+      let H = canvas.height = innerHeight;
+      const particles = [];
+      const count = Math.round((W*H)/90000); // scale particles with viewport
 
-    function rand(min,max){ return Math.random()*(max-min)+min; }
+      function rand(min,max){ return Math.random()*(max-min)+min; }
 
-    function create(){
+      function resize(){ W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+      addEventListener('resize', resize);
+
       for(let i=0;i<count;i++){
         particles.push({
-          x: rand(0,w),
-          y: rand(0,h),
-          r: rand(0.6,1.8),
-          vx: rand(-0.15,0.15),
-          vy: rand(-0.1,0.1),
-          alpha: rand(0.03,0.14)
+          x: rand(0,W), y: rand(0,H),
+          r: rand(0.6,2.6),
+          vx: rand(-0.15,0.15), vy: rand(-0.05,0.05),
+          alpha: rand(0.05,0.5)
         });
       }
-    }
-    create();
 
-    function draw(){
-      ctx.clearRect(0,0,w,h);
-      particles.forEach(p=>{
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < -10) p.x = w+10;
-        if (p.x > w+10) p.x = -10;
-        if (p.y < -10) p.y = h+10;
-        if (p.y > h+10) p.y = -10;
+      function step(){
+        ctx.clearRect(0,0,W,H);
+        for(const p of particles){
+          p.x += p.vx;
+          p.y += p.vy;
+          if(p.x < -10) p.x = W + 10;
+          if(p.x > W + 10) p.x = -10;
+          if(p.y < -10) p.y = H + 10;
+          if(p.y > H + 10) p.y = -10;
+          // glow style depends on theme
+          ctx.beginPath();
+          ctx.globalAlpha = p.alpha * (body.classList.contains('theme-dark') ? 1.0 : 0.9);
+          if(body.classList.contains('theme-dark')){
+            ctx.fillStyle = 'rgba(0,255,215,0.14)';
+            ctx.shadowColor = 'rgba(0,255,215,0.12)';
+            ctx.shadowBlur = 8;
+          } else {
+            ctx.fillStyle = 'rgba(45,55,72,0.06)';
+            ctx.shadowColor = 'rgba(0,0,0,0.06)';
+            ctx.shadowBlur = 6;
+          }
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+          ctx.fill();
+          ctx.closePath();
+          ctx.shadowBlur = 0;
+        }
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(step);
+      }
+      step();
+    })();
 
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(0,249,224,${p.alpha})`;
-        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fill();
-      });
-      requestAnimationFrame(draw);
-    }
-    draw();
-  })();
+    /* ----------------- Service Worker Unregister (helps cache issues) ----------------- */
+    (function unregisterSW(){
+      if('serviceWorker' in navigator){
+        navigator.serviceWorker.getRegistrations().then(regs => {
+          regs.forEach(reg => {
+            // Only unregister if it's not required by you; this helps clear old caches
+            try { reg.unregister(); console.log('SW unregistered'); } catch(e){/*ignore*/ }
+          });
+        }).catch(e=>{/*ignore*/});
+      }
+    })();
 
-  /* =========================
-     Minor progressive enhancement:
-     - keyboard shortcuts:
-       T toggles theme, F toggles 12/24, W refresh weather
-     ========================= */
-  window.addEventListener('keydown', (e)=>{
-    if (e.key === 't' || e.key === 'T') themeBtn.click();
-    if (e.key === 'f' || e.key === 'F') formatBtn.click();
-    if (e.key === 'w' || e.key === 'W') refreshWeatherBtn.click();
-  });
+    /* ----------------- Event Listeners / Init ----------------- */
+    btnFormat.addEventListener('click', () => {
+      state.is24 = !state.is24;
+      updateClock();
+    });
 
+    btnTheme.addEventListener('click', () => {
+      const newTheme = state.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(newTheme);
+    });
+
+    btnRefreshWeather.addEventListener('click', initWeather);
+
+    // initial setup
+    applyTheme('dark');           // default theme
+    setQuote();
+    updateClock();
+    initWeather();
+
+    // clock ticking every second
+    setInterval(updateClock, 1000);
+
+    // rotate quotes every 12s
+    setInterval(setQuote, 12000);
+
+    /* ----------------- Helpful: Listen for page show (bfcache / back-forward cache) and refresh weather */
+    addEventListener('pageshow', event => {
+      // if persisted from bfcache, re-run critical init
+      if(event.persisted){
+        updateClock();
+        initWeather();
+      }
+    });
+
+    /* ----------------- END ----------------- */
   </script>
 </body>
 </html>
